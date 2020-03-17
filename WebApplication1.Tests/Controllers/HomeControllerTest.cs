@@ -5,7 +5,7 @@ using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WebApplication1;
-using WebApplication1.Controllers;
+using WebApplication2.Controllers;
 
 namespace WebApplication1.Tests.Controllers
 {

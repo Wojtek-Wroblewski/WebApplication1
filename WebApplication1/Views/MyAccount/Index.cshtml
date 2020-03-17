@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@using (Html.BeginForm("Login", "MyAccount", FormMethod.Post))
+{
+    @Html.TextBox("userName", null, new { @class = "form-control" });
+
+    @Html.TextBox("PassWord", null, new { @class = "form-control" });
+
+    <input type ="submit" value="Login" class=" btn btn-primary"/>
+
+}
