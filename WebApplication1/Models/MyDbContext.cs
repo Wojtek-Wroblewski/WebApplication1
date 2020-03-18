@@ -8,6 +8,6 @@ namespace WebApplication2.Models
 {
     public class MyDbContext :DbContext
     {
-        public DbSet<UserAccount> UserAccount { get; set; }
+        public DbSet<RegisterAccount> UserAccount { get; set; }
     }
 }

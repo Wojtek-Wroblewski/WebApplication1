@@ -25,11 +25,28 @@
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
-                @Html.Partial("_LoginPartial")
+                @Html.Partial("_LoginPartial2")
             </div>
         </div>
     </div>
     <div class="container body-content">
+
+        @{var cookieValue = Request.Cookies["Session"];
+            if (cookieValue != null)
+            {
+                @cookieValue.Value
+                    if (Html.Logged(cookieValue.Value))
+                    {
+                        <style>
+
+                            body 
+                            {
+                            background-color: powderblue;
+                            }
+                        </style>
+                    }
+                }
+            }
         @RenderBody()
         <hr />
         <footer>

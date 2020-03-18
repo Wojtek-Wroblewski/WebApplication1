@@ -1,4 +1,4 @@
-﻿@model WebApplication2.Models.UserAccount
+﻿@model WebApplication2.Models.RegisterAccount
 
 @{
     ViewBag.Title = "Register";
@@ -70,8 +70,15 @@
     </div>
 
     <div class="form-group">
+        @Html.LabelFor(model => model.RememberMe, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.CheckBoxFor(model => model.RememberMe)
+        </div>
+    </div>
+
+    <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" value="Create" class="btn btn-default" />
+            <input type="submit" value="Register" class="btn btn-default" />
         </div>
     </div>
 </div>

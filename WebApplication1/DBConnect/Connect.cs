@@ -30,13 +30,20 @@ namespace DataLibrary.DataAccess
 
         public static int SaveData<T>(string sql, T data)
         {
-
             using (IDbConnection cnn = new SqlConnection(GetConnectionString()))
             {
                 return cnn.Execute(sql, data);
             }
-
         }
+        public static int UpdateDAta<T>(string sql, T data)
+        {
+            using (IDbConnection cnn = new SqlConnection(GetConnectionString()))
+            {
+                return cnn.Execute(sql, data);
+            }
+        }
+
+
 
     }
 }
