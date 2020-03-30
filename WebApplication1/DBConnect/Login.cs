@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 using System.Security.Cryptography;
-
+using System.Web.Mvc;
 
 namespace WebApplication2.DBConnect
 {
@@ -35,30 +35,8 @@ namespace WebApplication2.DBConnect
 
         public static RegisterAccount Logout (RegisterAccount model)
         {
-            string HashSalt = HashPasswordUsingPBKDF2(model.Password);
-            string[] temp = HashSalt.Split('|');
-            Random rng = new Random();
-            RegisterAccount data = new RegisterAccount
-            {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                UserName = model.UserName,
-                Hash = temp[1],
-                Salt = temp[0],
-                Session = RandomIdSession(HashSalt)
-            };
 
-            if (EmailFree(data.Email))
-            {
-                string sql = @"insert into dbo.Users (FirstName,LastName,Email,UserName,hash,salt,Session) values (@FirstName,@LastName,@Email,@UserName,@Hash,@Salt,@Session);";
-                SqlDataAccess.SaveData(sql, data);
-                return data;
-            }
-            else
-            {
                 return null;
-            }
         }
 
         
@@ -76,7 +54,79 @@ namespace WebApplication2.DBConnect
         }
 
 
+        public static string Logg (LoginAccount model)
+        {
 
+            HttpCookie Logged = new HttpCookie("Logged", "");
+            HttpCookie RememberMe = new HttpCookie("RememberMe", "");
+            switch (Loginto(model.Email, model.Password))
+                {
+                    case "Success":
+                        {
+                                Logged.Value = ("True");
+                                Logged.Expires.AddDays(10);
+                                HttpContext.Current.Response.SetCookie(Logged);
+                                if (model.RememberMe)
+                                {
+                                    int ddd = RememberMetoDB(model);
+
+                                    return "Success|True";
+                                }
+                                else
+                                {
+                                    RememberMe.Value = ("False");
+                                    RememberMe.Expires = DateTime.Now.AddDays(-1);
+                                    HttpContext.Current.Response.SetCookie(RememberMe);
+                                    return "Success|False";
+                                }
+                    break;
+                        }
+
+                    case "Password":
+                        {
+                            Logged.Value = ("false");
+                            Logged.Expires = DateTime.Now.AddDays(-1);
+                            HttpContext.Current.Response.SetCookie(Logged);
+                        return "Password";
+
+                        break;
+                        }
+
+                    case "Email":
+                        {
+                            Logged.Value = ("false");
+                            Logged.Expires = DateTime.Now.AddDays(-1);
+                            HttpContext.Current.Response.SetCookie(Logged);
+                        return "Email";
+                    break;
+                        }
+
+                }
+
+
+            return null;
+        }
+
+
+
+        public static int RememberMetoDB(LoginAccount model)
+        {
+            model.Session = RandomIdSession(DateTime.Now.ToString());
+
+            HttpCookie RememberMe = new HttpCookie("RememberMe", "");
+            RememberMe.Value = (model.Session.ToString());
+            RememberMe.Expires.AddDays(10);
+            HttpContext.Current.Response.SetCookie(RememberMe);           
+
+            string sql = @"update dbo.Users set Session = '"+model.Session+"' WHERE Email= '"+model.Email+"' ;";
+            return SqlDataAccess.SaveData(sql, model);
+        }
+
+        public static int LoggedSucces(LoginAccount model)
+        {
+            string sql = @"update dbo.Users set ";
+            return SqlDataAccess.SaveData(sql, model);
+        }
 
         #region Haszowanie
         public static string HashPasswordUsingPBKDF2(string password)

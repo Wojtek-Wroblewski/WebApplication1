@@ -7,6 +7,7 @@ using WebApplication2;
 using WebApplication2.Models;
 using static WebApplication2.DBConnect.Register;
 using static WebApplication2.DBConnect.Logging;
+using System.Diagnostics;
 
 namespace WebApplication2.Controllers
 {
@@ -17,17 +18,30 @@ namespace WebApplication2.Controllers
         // GET: Accaount
         public ActionResult Index()
         {
-            HttpCookie NewCookie = Request.Cookies["Session"];
-            if (NewCookie!=null)
+            HttpCookie Logged = Request.Cookies["Logged"];
+            HttpCookie RememberMe = Request.Cookies["RememberMe"];
+            RegisterAccount login = (RegisterAccount)TempData["Login"];
+
+            if (Logged != null)
+            {
+                Debug.WriteLine(Logged.Value);
+            }
+            if (RememberMe != null)
+            {
+                Debug.WriteLine(RememberMe.Value);
+            }
+
+            if (RememberMe != null)
             {
                /* if(IsSessionInDB(NewCookie))*/
                 /*Strona dla zalogowanych*/
-
             }
             else
             { /*Dla NIEzalogowanych */}
 
-            return View();
+
+
+            return View(login);
         }
 
         public ActionResult Login()
@@ -42,36 +56,36 @@ namespace WebApplication2.Controllers
             //var model = z.ReturnList().Where(x => x.UserName == userName && x.Password == PassWord).SingleOrDefault();
             if (ModelState.IsValid)
             if (model.Email != null && model.Password!=null)
-            {
-                    HttpCookie Logged = new HttpCookie("Logged","");
-
-                switch (Loginto(model.Email, model.Password))
                 {
-                    case "Success":
-                        {
-                            Logged.Value = ("True");
-                            break;
-                        }
 
-                    case "Password":
-                        {
-                            Logged.Value = ("false");
+                   switch(Logg(model))
+                    {
+                        case "Success|True":
+                            {
+                                return RedirectToAction("Index", "MyAccount");
+                                break;
+                            }
+                        case "Success|False":
+                            {
 
-                            ModelState.AddModelError("Password", "Wrong password");
-                            break;
-                        }
+                                return RedirectToAction("Index", "MyAccount");
+                                break;
+                            }
+                        case "Password":
+                            {
 
-                    case "Email":
-                        {
-                            Logged.Value = ("false");
-                            ModelState.AddModelError("Email", "Wrong Email");
-                            break;
-                        }
+                                ModelState.AddModelError("Password", "Wrong password");
+                                break;
+                            }
+                        case "Email":
+                            {
 
-                }
+                                ModelState.AddModelError("Email", "Wrong Email");
+                                break;
+                            }
+                    } 
 
-                Logged.Expires.AddDays(10);
-                HttpContext.Response.SetCookie(Logged);
+                    
 
             //Create cookies
             HttpCookie userCookie = new HttpCookie("user", model.UserID.ToString());
@@ -81,6 +95,7 @@ namespace WebApplication2.Controllers
 
             //Save data at cookies
             HttpContext.Response.SetCookie(userCookie);
+                    
 }
             //Get user data from cookie
             HttpCookie NewCookie = Request.Cookies["user"];
@@ -128,9 +143,24 @@ namespace WebApplication2.Controllers
                         userCookie.Expires = DateTime.Now.AddDays(-1);
                         HttpContext.Response.SetCookie(userCookie);
                     }
+                    
+                    
+                   LoginAccount login = new LoginAccount
+                    {
+                        Email = account.Email,
+                        Password = account.Password,
+                        Session = account.Session,
+                        Hash = account.Hash,
+                        Salt = account.Salt,
+                        RememberMe = account.RememberMe,
+                        UserID = account.UserID
+                    };
+
+                    TempData["Login"] = account;
 
                     return RedirectToAction("Index", "MyAccount");
                 }
+            
                 else
                 {
                     ModelState.AddModelError("Email", "An account already exists for this email address.");
