@@ -31,22 +31,19 @@
     </div>
     <div class="container body-content">
 
-        @{var cookieValue = Request.Cookies["Session"];
-            if (cookieValue != null)
+        @{var cookieLogged = Request.Cookies["Logged"];
+            var cookieRememberMe = Request.Cookies["RememberMe"];
+            var cookieName = Request.Cookies["Name"];
+            if (cookieLogged != null)
             {
-                @cookieValue.Value
-                    if (Html.Logged(cookieValue.Value))
-                    {
-                        <style>
-
-                            body 
-                            {
-                            background-color: powderblue;
-                            }
-                        </style>
-                    }
-                }
+                @cookieLogged.Value<br>
+                Html.Logged(cookieLogged.Value, cookieName.Value);
             }
+            if (cookieRememberMe != null)
+            {
+                @cookieRememberMe.Value <br>
+            }
+        }
         @RenderBody()
         <hr />
         <footer>

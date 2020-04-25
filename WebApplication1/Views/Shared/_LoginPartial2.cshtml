@@ -1,22 +1,37 @@
 ﻿@*@using Microsoft.AspNet.Identity*@
-@*@if (Request.IsAuthenticated)*@
-@{
-    //using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+@{var cookieLogged = Request.Cookies["Logged"];
+    var cookieName = Request.Cookies["Name"];
+    if (cookieLogged != null)
     {
-    @Html.AntiForgeryToken()
+        if (Html.Logged(cookieLogged.Value, cookieName.Value))
+        {
+            //using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
 
-    <ul class="nav navbar-nav navbar-right">
-        <li>
-           @* @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })*@
-        </li>
-        @*<li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>*@
-    </ul>
+            <ul class="nav navbar-nav navbar-right" style=" color:white;">
+                <li>
+                    WITAJ |
+                    @* @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })*@
+                </li>
+                WYLOGUJ
+
+                @*<li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>*@
+            </ul>
+
+        }
+        else
+        {
+            <ul style="color:white;"  class="nav navbar-nav navbar-right " >
+
+                ZALOGUJ
+            </ul>
+        }
+
     }
-}
-else
-{
-    <ul class="nav navbar-nav navbar-right">
-       @* <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>*@
-       @* <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>*@
-    </ul>
+    else
+    {
+        <ul class="nav navbar-nav navbar-right " style="color:white;">
+
+            ZALOGUJ
+        </ul>
+    }
 }

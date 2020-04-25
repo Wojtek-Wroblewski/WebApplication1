@@ -20,9 +20,10 @@ namespace WebApplication2.Controllers
         {
             HttpCookie Logged = Request.Cookies["Logged"];
             HttpCookie RememberMe = Request.Cookies["RememberMe"];
-            RegisterAccount login = (RegisterAccount)TempData["Login"];
+            RegisterAccount Registered = (RegisterAccount)TempData["Registered"];
+            LoginAccount login = (LoginAccount)TempData["Login"];
 
-            if (Logged != null)
+                if (Logged != null)
             {
                 Debug.WriteLine(Logged.Value);
             }
@@ -39,9 +40,8 @@ namespace WebApplication2.Controllers
             else
             { /*Dla NIEzalogowanych */}
 
+            return View();
 
-
-            return View(login);
         }
 
         public ActionResult Login()
@@ -62,12 +62,14 @@ namespace WebApplication2.Controllers
                     {
                         case "Success|True":
                             {
+                                TempData["Login"] = model;
                                 return RedirectToAction("Index", "MyAccount");
                                 break;
                             }
                         case "Success|False":
                             {
 
+                                TempData["Login"] = model;
                                 return RedirectToAction("Index", "MyAccount");
                                 break;
                             }
@@ -83,12 +85,13 @@ namespace WebApplication2.Controllers
                                 ModelState.AddModelError("Email", "Wrong Email");
                                 break;
                             }
-                    } 
+                    }
 
-                    
 
-            //Create cookies
-            HttpCookie userCookie = new HttpCookie("user", model.UserID.ToString());
+
+
+                    //Create cookies
+                    HttpCookie userCookie = new HttpCookie("user", model.UserID.ToString());
 
             //Expire Date
             userCookie.Expires.AddDays(10);

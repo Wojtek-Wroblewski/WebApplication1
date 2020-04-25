@@ -8,11 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Helpers;
 using System.Security.Cryptography;
+using System.Security;
 using System.Web.Mvc;
+
 
 namespace WebApplication2.DBConnect
 {
-    public class Logging
+    public static class Logging
     {
 
         public static string  Loginto (string Email, string Password)
@@ -63,13 +65,18 @@ namespace WebApplication2.DBConnect
                 {
                     case "Success":
                         {
-                                Logged.Value = ("True");
-                                Logged.Expires.AddDays(10);
-                                HttpContext.Current.Response.SetCookie(Logged);
                                 if (model.RememberMe)
                                 {
-                                    int ddd = RememberMetoDB(model);
-
+                                    Logged.Value = LoginDB(model);
+                                    Logged.Expires.AddDays(10);
+                                    HttpContext.Current.Response.SetCookie(Logged);
+                                    RememberMe.Value = ("True");
+                                    RememberMe.Expires.AddDays(10);
+                                    HttpContext.Current.Response.SetCookie(RememberMe);
+                                    HttpCookie Name = new HttpCookie("Name", "");
+                                    Name.Value = Crypt(model.Email);
+                                    Name.Expires.AddDays(10);
+                                    HttpContext.Current.Response.SetCookie(Name);
                                     return "Success|True";
                                 }
                                 else
@@ -109,24 +116,21 @@ namespace WebApplication2.DBConnect
 
 
 
-        public static int RememberMetoDB(LoginAccount model)
+        public static string LoginDB(LoginAccount model)
         {
             model.Session = RandomIdSession(DateTime.Now.ToString());
-
-            HttpCookie RememberMe = new HttpCookie("RememberMe", "");
-            RememberMe.Value = (model.Session.ToString());
-            RememberMe.Expires.AddDays(10);
-            HttpContext.Current.Response.SetCookie(RememberMe);           
-
-            string sql = @"update dbo.Users set Session = '"+model.Session+"' WHERE Email= '"+model.Email+"' ;";
-            return SqlDataAccess.SaveData(sql, model);
+            string sql = @"update dbo.Users set Session = '" + model.Session + "' WHERE Email= '" + model.Email + "' ;";
+            SqlDataAccess.SaveData(sql, model);
+            return model.Session;
         }
-
-        public static int LoggedSucces(LoginAccount model)
+        public static string LoginDbFalse(LoginAccount model)
         {
-            string sql = @"update dbo.Users set ";
-            return SqlDataAccess.SaveData(sql, model);
+            model.Session = "false";
+            string sql = @"update dbo.Users set Session = '" + model.Session + "' WHERE Email= '" + model.Email + "' ;";
+            SqlDataAccess.SaveData(sql, model);
+            return model.Session;
         }
+        
 
         #region Haszowanie
         public static string HashPasswordUsingPBKDF2(string password)
@@ -167,5 +171,22 @@ namespace WebApplication2.DBConnect
                 return false;
         }
         #endregion
+
+        
+        #region Crypt
+        public static string Crypt(this string text)    
+        {
+            
+            return Convert.ToBase64String(Encoding.Unicode.GetBytes(text));
+        }
+
+        public static string Decrypt(this string text)
+        {
+            return Encoding.Unicode.GetString(Convert.FromBase64String(text));
+        }
+        #endregion
+
+
+        
     }
 }
