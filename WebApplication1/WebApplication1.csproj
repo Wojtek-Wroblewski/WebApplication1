@@ -258,6 +258,7 @@
     <Content Include="Views\Shared\_LoginPartial2.cshtml" />
     <Content Include="Views\MyAccount\_LoginPartial_Account.cshtml" />
     <Content Include="Views\MyAccount\_RegisterPartial_Account.cshtml" />
+    <Content Include="Views\MyAccount\OnlyforLogged.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

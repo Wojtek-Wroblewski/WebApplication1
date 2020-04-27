@@ -34,13 +34,7 @@ namespace WebApplication2.DBConnect
                 return "Email"; 
 
         }
-
-        public static RegisterAccount Logout (RegisterAccount model)
-        {
-
-                return null;
-        }
-
+        
         
         public static bool EmailFree(string Email)
         {/*@"select * from dbo.Artysci where ArtId='" + Id+"';";// where Nazwa1='@_nazwa1' OR Nazwa2='@_nazwa2';";
@@ -136,6 +130,19 @@ namespace WebApplication2.DBConnect
             string sql = @"update dbo.Users set Session = '" + model.Session + "' WHERE Email= '" + model.Email + "' ;";
             SqlDataAccess.SaveData(sql, model);
             return model.Session;
+        }
+
+        public static bool UserLogged(string Session, string Email)
+        {
+            Email=Decrypt(Email);
+            string sql = @"SELECT * from dbo.Users where Session = '" + Session + "' and Email= '"+Email+"';";
+
+            var data = SqlDataAccess.LoadData<RegisterAccount>(sql);
+            if (data!=null)
+            {
+                return true;
+            }
+            return false;
         }
         
 

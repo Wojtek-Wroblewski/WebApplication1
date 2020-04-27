@@ -145,7 +145,6 @@ namespace WebApplication2.Controllers
                     //return RedirectToAction("Login", new RouteValueDictionary(new { LoginAccount = login }));
                     //return RedirectToAction("Login", "MyAccount", login);
                     return Login(login);
-                    return RedirectToAction("Index", "MyAccount");
                 }
             
                 else
@@ -165,15 +164,40 @@ namespace WebApplication2.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Logout()
         {
+
+
+
             foreach (string key in Request.Cookies.AllKeys)
             {
                 HttpCookie c = Request.Cookies[key];
                 c.Expires = DateTime.Now.AddMonths(-1);
                 Response.AppendCookie(c);
             }
+            
+
 
             return RedirectToAction("Index", "MyAccount");
         }
+        public ActionResult OnlyforLogged()
+        {
+            HttpCookie Logged = Request.Cookies["Logged"];
+            HttpCookie Name = Request.Cookies["Name"];
+            
+            
+            if (Logged!=null && Name!=null)
+            {
+                if (UserLogged(Logged.Value,Name.Value))
+                {
+                    return View();
+                }
+            }
+
+
+            return RedirectToAction("Index", "MyAccount");
+        }
+
+
+
 
 
         //public ActionResult Login()
