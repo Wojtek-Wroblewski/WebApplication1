@@ -34,7 +34,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.RememberMe, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <div class="checkbox">
+                <div class="checkbox" style=" padding-left:20px;">
                     @Html.EditorFor(model => model.RememberMe)
                     @Html.ValidationMessageFor(model => model.RememberMe, "", new { @class = "text-danger" })
                 </div>
@@ -48,7 +48,3 @@
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>

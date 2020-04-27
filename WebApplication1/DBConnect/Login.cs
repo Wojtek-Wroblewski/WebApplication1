@@ -81,9 +81,16 @@ namespace WebApplication2.DBConnect
                                 }
                                 else
                                 {
+                                    Logged.Value = LoginDB(model);
+                                    Logged.Expires.AddHours(1);
+                                    HttpContext.Current.Response.SetCookie(Logged);
                                     RememberMe.Value = ("False");
-                                    RememberMe.Expires = DateTime.Now.AddDays(-1);
+                                    RememberMe.Expires.AddHours(1);
                                     HttpContext.Current.Response.SetCookie(RememberMe);
+                                    HttpCookie Name = new HttpCookie("Name", "");
+                                    Name.Value = Crypt(model.Email);
+                                    Name.Expires.AddHours(1);
+                                    HttpContext.Current.Response.SetCookie(Name);
                                     return "Success|False";
                                 }
                     break;

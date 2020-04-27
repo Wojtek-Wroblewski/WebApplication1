@@ -35,7 +35,7 @@ namespace System.Web.Mvc
                 }
 
             }
-        public static string Name(this HtmlHelper html, string Session, string Email)
+        public static string DisplayName(this HtmlHelper html, string Session, string Email)
         {
             string sql = @"SELECT * from dbo.Users where Session = '" + Session + "';";
             string DecrypeEmail = Decrypt(Email);

@@ -8,6 +8,7 @@ using WebApplication2.Models;
 using static WebApplication2.DBConnect.Register;
 using static WebApplication2.DBConnect.Logging;
 using System.Diagnostics;
+using System.Web.Routing;
 
 namespace WebApplication2.Controllers
 {
@@ -23,22 +24,7 @@ namespace WebApplication2.Controllers
             RegisterAccount Registered = (RegisterAccount)TempData["Registered"];
             LoginAccount login = (LoginAccount)TempData["Login"];
 
-                if (Logged != null)
-            {
-                Debug.WriteLine(Logged.Value);
-            }
-            if (RememberMe != null)
-            {
-                Debug.WriteLine(RememberMe.Value);
-            }
 
-            if (RememberMe != null)
-            {
-               /* if(IsSessionInDB(NewCookie))*/
-                /*Strona dla zalogowanych*/
-            }
-            else
-            { /*Dla NIEzalogowanych */}
 
             return View();
 
@@ -53,7 +39,6 @@ namespace WebApplication2.Controllers
         {
 
             LoginAccount z = new LoginAccount();
-            //var model = z.ReturnList().Where(x => x.UserName == userName && x.Password == PassWord).SingleOrDefault();
             if (ModelState.IsValid)
             if (model.Email != null && model.Password!=null)
                 {
@@ -90,18 +75,18 @@ namespace WebApplication2.Controllers
 
 
 
-                    //Create cookies
-                    HttpCookie userCookie = new HttpCookie("user", model.UserID.ToString());
+            //Create cookies
+            //HttpCookie userCookie = new HttpCookie("user", model.UserID.ToString());
 
             //Expire Date
-            userCookie.Expires.AddDays(10);
+            //userCookie.Expires.AddDays(10);
 
             //Save data at cookies
-            HttpContext.Response.SetCookie(userCookie);
+            //HttpContext.Response.SetCookie(userCookie);
                     
 }
             //Get user data from cookie
-            HttpCookie NewCookie = Request.Cookies["user"];
+            //HttpCookie NewCookie = Request.Cookies["user"];
 
             //return NewCookie.Value;
             return View();
@@ -117,11 +102,6 @@ namespace WebApplication2.Controllers
             
             if (ModelState.IsValid)
             {
-                /*
-                 TODO
-                 if (account.EmailWolny)
-
-                 */
                 if (ModelState.ContainsKey("Email"))
                     ModelState["Email"].Errors.Clear();
                 var Registered = NewAccount(account);
@@ -159,8 +139,12 @@ namespace WebApplication2.Controllers
                         UserID = account.UserID
                     };
 
-                    TempData["Login"] = account;
+                    TempData["Registered"] = account;
 
+
+                    //return RedirectToAction("Login", new RouteValueDictionary(new { LoginAccount = login }));
+                    //return RedirectToAction("Login", "MyAccount", login);
+                    return Login(login);
                     return RedirectToAction("Index", "MyAccount");
                 }
             
@@ -173,6 +157,24 @@ namespace WebApplication2.Controllers
 
             return View();
         }
+
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Logout()
+        {
+            foreach (string key in Request.Cookies.AllKeys)
+            {
+                HttpCookie c = Request.Cookies[key];
+                c.Expires = DateTime.Now.AddMonths(-1);
+                Response.AppendCookie(c);
+            }
+
+            return RedirectToAction("Index", "MyAccount");
+        }
+
 
         //public ActionResult Login()
         //{
