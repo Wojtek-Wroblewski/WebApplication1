@@ -8,7 +8,21 @@
 
 <div>
 
-    <h4>Strona główna bla bla bla </h4>
-    
+    <h4>Main Page bla bla bla </h4>
+    <p>
+        this text is vissible for everyone
+    </p>
+    @{var cookieLogged = Request.Cookies["Logged"];
+        var cookieName = Request.Cookies["Name"];
+        if (cookieLogged != null)
+        {
+            if (Html.Logged(cookieLogged.Value, cookieName.Value))
+            {
+            <p>
+                But this only for logged users
+            </p>
+                }
+            }
+     }
 </div>
 

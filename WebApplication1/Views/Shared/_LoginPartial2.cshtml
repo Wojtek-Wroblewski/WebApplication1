@@ -8,30 +8,28 @@
             //using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
 
 
-<ul class="nav navbar-nav navbar-right">
-    <li style="padding:15px; color:white;">
-        HELLO THERE @Html.DisplayName(cookieLogged.Value, cookieName.Value)
-        @* @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })*@
-    </li>
-    <li style="color:white; padding:15px;">
-        @using (Html.BeginForm("Logout", "MyAccount", FormMethod.Post, new { id = "logoutForm", @class = "form-horizontal", role = "form" }))
+        <ul class="nav navbar-nav navbar-right">
+            <li style="padding:15px; color:white;">
+                HELLO THERE @Html.DisplayName(cookieLogged.Value, cookieName.Value)
+            </li>
+            <li style="color:white; padding:15px;">
+                @using (Html.BeginForm("Logout", "MyAccount", FormMethod.Post, new { id = "logoutForm", @class = "form-horizontal", role = "form" }))
 
-        {
-            @Html.AntiForgeryToken()<a href="javascript:document.getElementById('logoutForm').submit()" style="color:white;">Log out</a>
+                {
+                    @Html.AntiForgeryToken()<a href="javascript:document.getElementById('logoutForm').submit()" style="color:white;">Log out</a>
 
-        }
-    </li>
+                }
+            </li>
 
-        @*<li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>*@
-    </ul>
+        </ul>
         }
 
         else
         {<ul class="nav navbar-nav navbar-right">
 
-    <li>@Html.ActionLink("Login", "Login", "MyAccount")</li>
-    <li>@Html.ActionLink("Register", "Register", "MyAccount")</li>
-</ul>
+            <li>@Html.ActionLink("Login", "Login", "MyAccount")</li>
+            <li>@Html.ActionLink("Register", "Register", "MyAccount")</li>
+        </ul>
 
         }
 
